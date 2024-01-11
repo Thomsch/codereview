@@ -33,12 +33,14 @@ export default {
       this.error = null;
 
       axios
-        .get("https://jsonplaceholder.typicode.com/posts/1") // Replace with your API endpoint
+        .get("http://127.0.0.1:5000/") // Replace with your API endpoint
         .then((response) => {
-          this.data = response.data;
+          console.log(response)
+          this.data = response.data
           this.loading = false;
         })
         .catch((error) => {
+          console.log(error)
           this.error = error.message;
           this.loading = false;
         });
