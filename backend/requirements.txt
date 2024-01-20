@@ -2,7 +2,16 @@ typing-inspect==0.8.0
 typing_extensions==4.5.0
 openai
 langchain
-jupyter
+langserveserve
 python-dotenv
 pydantic==1.10.8
-flask
+fastapi
+uvicorn
+sse_starlette
+
+PyGithub
+unidiff
+requests
+
+# For testing
+pytest
