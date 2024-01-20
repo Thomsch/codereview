@@ -1,13 +1,15 @@
 <template>
   <div>
     <h1>API Example</h1>
-    <button @click="fetchData">Fetch Joke</button>
+
+    <input type="text" v-model="prUrl" placeholder="Enter PR URL" />
+    <button @click="fetchData">Fetch Data</button>
 
     <div v-if="loading">Loading...</div>
 
-    <div v-if="joke">
-      <h2>Joke:</h2>
-      <p>{{ joke }}</p>
+    <div v-if="data">
+      <h2>Response:</h2>
+      <pre>{{ data }}</pre>
     </div>
 
     <div v-if="error">
@@ -16,30 +18,35 @@
   </div>
 </template>
 
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js">
+<script>
+import axios from 'axios'; // Ensure axios is imported
+
 export default {
   data() {
     return {
-      joke: null,
+      prUrl: '', // Data property for the PR URL
+      data: null,
       loading: false,
       error: null,
     };
   },
   methods: {
     async fetchData() {
+      if (!this.prUrl) {
+        this.error = 'Please enter a PR URL';
+        return;
+      }
+
       this.loading = true;
+      this.data = null;
       this.error = null;
 
       try {
-        // Import the RemoteRunnable inside the method to ensure it's only loaded when needed
-        const { RemoteRunnable } = await import('langchain/runnables/remote');
+        const apiUrl = ' http://localhost:8000/'; // Replace with your API URL
+        const params = { pr_url: this.prUrl };
 
-        const chain = new RemoteRunnable({
-          url: `http://localhost:8000/joke/`,
-        });
-
-        const result = await chain.invoke({ topic: "cats" });
-        this.joke = result;
+        const response = await axios.get(apiUrl, { params });
+        this.data = response.data;
       } catch (error) {
         console.error(error);
         this.error = error.message;
