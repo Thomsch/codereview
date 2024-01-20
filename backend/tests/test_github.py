@@ -10,5 +10,5 @@ def test_get_pr():
 
 def test_nonexistent_pr():
     with pytest.raises(ValueError) as e:
-        diff = get_pr_diff("https://github.com/PyGithub/PyGithub/pull/999999")
+        get_pr_diff("https://github.com/PyGithub/PyGithub/pull/999999")
         assert e.value == "Could not retrieve diff from Github: Not Found (404)"
