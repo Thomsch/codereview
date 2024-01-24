@@ -1,15 +1,13 @@
 <template>
   <div>
     <h1>API Example</h1>
-
-    <input type="text" v-model="prUrl" placeholder="Enter PR URL" />
-    <button @click="fetchData">Fetch Data</button>
+    <button @click="fetchData">Fetch Joke</button>
 
     <div v-if="loading">Loading...</div>
 
-    <div v-if="data">
-      <h2>Response:</h2>
-      <pre>{{ data }}</pre>
+    <div v-if="joke">
+      <h2>Joke:</h2>
+      <p>{{ joke }}</p>
     </div>
 
     <div v-if="error">
@@ -19,34 +17,40 @@
 </template>
 
 <script>
-import axios from 'axios'; // Ensure axios is imported
 
 export default {
   data() {
     return {
-      prUrl: '', // Data property for the PR URL
-      data: null,
+      joke: '',
       loading: false,
       error: null,
     };
   },
   methods: {
     async fetchData() {
-      if (!this.prUrl) {
-        this.error = 'Please enter a PR URL';
-        return;
-      }
-
       this.loading = true;
-      this.data = null;
       this.error = null;
+      this.joke = ''; // Reset joke data
 
       try {
-        const apiUrl = ' http://localhost:8000/'; // Replace with your API URL
-        const params = { pr_url: this.prUrl };
+        // Import the RemoteRunnable inside the method to ensure it's only loaded when needed
+        const { RemoteRunnable } = await import('langchain/runnables/remote');
 
-        const response = await axios.get(apiUrl, { params });
-        this.data = response.data;
+        const chain = new RemoteRunnable({
+          url: `http://localhost:8000/feedback/`,
+          // timeout: 1,
+          // headers: {
+          //   'Content-Type': 'application/json',
+          // },
+        });
+
+        const stream = await chain.stream({ pr_url: "https://github.com/PyGithub/PyGithub/pull/664"});
+
+        for await (const chunk of stream) {
+          console.log(chunk);
+          this.joke += chunk;
+        }
+
       } catch (error) {
         console.error(error);
         this.error = error.message;
