@@ -35,7 +35,7 @@ app.add_middleware(
 
 model = ChatOpenAI()
 prompt = ChatPromptTemplate.from_template(
-    "Give me feedback on this pull request. The changes are between the <diff> tags."
+    "Give me feedback on this pull request. The changes are between the <diff> tags. Format the feedback as html paragraphs."
     "<diff>"
     "{diff}"
     "<diff>")
