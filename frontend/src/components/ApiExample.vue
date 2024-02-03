@@ -1,7 +1,8 @@
 <template>
   <div>
-    <h1>API Example</h1>
-    <button @click="fetchData">Fetch Joke</button>
+    <h1>Code Review Assistant</h1>
+    <p>Paste the URL of your GitHub pull request to receive feedback.</p>
+    <button @click="fetchData">Review pull request</button>
 
     <div v-if="loading">Loading...</div>
 
