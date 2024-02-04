@@ -6,7 +6,7 @@
 
 <script>
 // import HelloWorld from './components/HelloWorld.vue'
-import ApiExample from "./components/ApiExample.vue";
+import ApiExample from "./components/CodeReview.vue";
 
 export default {
   name: 'App',
