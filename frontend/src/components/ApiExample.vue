@@ -1,19 +1,20 @@
 <template>
-  <div>
+  <div class="container">
     <h1>Code Review Assistant</h1>
     <p>Paste the URL of your GitHub pull request to receive feedback.</p>
-    <!-- Input field for the PR URL -->
-    <input v-model="prUrl" placeholder="Enter Pull Request URL" />
-    <button @click="fetchData">Review pull request</button>
+    <div class="input-group">
+      <input v-model="prUrl" placeholder="Enter pull request URL" class="input-field" @keyup.enter="fetchData"/>
+      <button @click="fetchData" class="submit-btn">Review pull request</button>
+    </div>
 
-    <div v-if="loading">Loading...</div>
+    <div v-if="loading" class="loading">Loading...</div>
 
-    <div v-if="llm_output">
-      <h2>Feedback:</h2>
+    <div v-if="llm_output" class="feedback">
+      <h2>Feedback</h2>
       <div v-html="llm_output"></div>
     </div>
 
-    <div v-if="error">
+    <div v-if="error" class="error">
       <p>Error: {{ error }}</p>
     </div>
   </div>
@@ -53,6 +54,7 @@ export default {
         let isFirstChunk = true;
 
         for await (const chunk of stream) {
+          this.loading = false;
           console.log(chunk);
 
           if (isFirstChunk) {
@@ -77,5 +79,56 @@ export default {
 </script>
 
 <style scoped>
-/* Add your component-specific styles here */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  max-width: 600px; /* Adjust the width as needed */
+  padding: 20px;
+}
+
+.input-group {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.input-field, .submit-btn {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0; /* Add margin to top and bottom */
+  box-sizing: border-box; /* Ensures padding does not affect the width */
+}
+
+.submit-btn {
+  padding: 10px 20px; /* Adjust padding as needed */
+  background-color: #4CAF50; /* A green background for the submit button */
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px; /* Space between input field and button */
+  display: inline-block; /* Makes the button fit its content */
+  margin-left: auto; /* Aligns the button to the right */
+  margin-right: auto; /* Aligns the button to the center */
+  border-radius: 5px; /* Adds rounded corners for a softer look */
+}
+
+.submit-btn:hover {
+  background-color: #45a049; /* Darker shade of green for hover effect */
+}
+
+.loading, .feedback, .error {
+  text-align: left;
+  width: 100%;
+}
+
+.error {
+  color: #e57373; /* Softer shade of red */
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #e57373; /* Optional: adds a subtle border */
+  border-radius: 5px; /* Optional: rounds the corners for a softer look */
+  background-color: #fff7f6; /* Optional: very light red background for more emphasis */
+}
 </style>
