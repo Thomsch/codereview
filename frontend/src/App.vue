@@ -5,7 +5,6 @@
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld.vue'
 import ApiExample from "./components/CodeReview.vue";
 
 export default {
