@@ -2,6 +2,8 @@
   <div>
     <h1>Code Review Assistant</h1>
     <p>Paste the URL of your GitHub pull request to receive feedback.</p>
+    <!-- Input field for the PR URL -->
+    <input v-model="prUrl" placeholder="Enter Pull Request URL" />
     <button @click="fetchData">Review pull request</button>
 
     <div v-if="loading">Loading...</div>
@@ -21,6 +23,7 @@
 export default {
   data() {
     return {
+      prUrl: '', // Add a data property for PR URL
       llm_output: '',
       loading: false,
       error: null,
@@ -30,7 +33,7 @@ export default {
     async fetchData() {
       this.loading = true;
       this.error = null;
-      this.llm_output = ''; // Reset joke data
+      this.llm_output = ''; // Reset feedback data
 
       try {
         // Import the RemoteRunnable inside the method to ensure it's only loaded when needed
@@ -44,24 +47,23 @@ export default {
           // },
         });
 
-        const stream = await chain.stream({pr_url: "https://github.com/PyGithub/PyGithub/pull/664"});
+        // Use the prUrl data property instead of the hardcoded URL
+        const stream = await chain.stream({pr_url: this.prUrl});
 
         let isFirstChunk = true;
 
         for await (const chunk of stream) {
-        console.log(chunk);
+          console.log(chunk);
 
-        if (isFirstChunk) {
-          // Assuming the first chunk is always the wrapper object
-          isFirstChunk = false;
-          // Process the wrapper object as needed. Example:
-          console.log("Run ID:", chunk);
-          // Optionally, store the run_id or handle it as needed
-        } else {
-          // Append HTML content directly
-          this.llm_output += chunk;
+          if (isFirstChunk) {
+            // Assuming the first chunk is always the wrapper object
+            isFirstChunk = false;
+            console.log("Run ID:", chunk);
+          } else {
+            // Append HTML content directly
+            this.llm_output += chunk;
+          }
         }
-      }
 
       } catch (error) {
         console.error(error);
