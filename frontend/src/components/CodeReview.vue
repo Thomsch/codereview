@@ -20,20 +20,21 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from 'vue'
+export default defineComponent({
   data() {
     return {
-      prUrl: '', // Add a data property for PR URL
-      llm_output: '',
-      loading: false,
-      error: null,
+      prUrl: '' as string,
+      llm_output: '' as string,
+      loading: false as boolean,
+      error: null as string | null,
     };
   },
   methods: {
     async fetchData() {
       this.loading = true;
-      this.error = null;
+      this.error = null // type: string | null
       this.llm_output = ''; // Reset feedback data
 
       try {
@@ -66,16 +67,20 @@ export default {
             this.llm_output += chunk;
           }
         }
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          this.error = err.message;
+        } else {
+          // If it's not an Error object, you might want to handle it differently
+          this.error = "An unknown error occurred";
+        }
 
-      } catch (error) {
-        console.error(error);
-        this.error = error.message;
       } finally {
         this.loading = false;
       }
     },
   },
-};
+});
 </script>
 
 <style scoped>

@@ -4,15 +4,16 @@
   <ApiExample/>
 </template>
 
-<script>
+<script lang="ts">
 import ApiExample from "./components/CodeReview.vue";
+import { defineComponent } from 'vue'
 
-export default {
+export default defineComponent({
   name: 'App',
   components: {
     ApiExample
   }
-}
+})
 </script>
 
 <style>
