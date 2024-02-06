@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from typing import Optional
 from operator import itemgetter
 
 from fastapi import FastAPI, HTTPException
@@ -9,7 +8,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_community.chat_models import ChatOpenAI
 from langserve import add_routes
 from dotenv import load_dotenv
-from github_api import get_pr_diff
+from app.github_api import get_pr_diff
 from langchain_core.runnables import RunnableLambda
 
 load_dotenv()
