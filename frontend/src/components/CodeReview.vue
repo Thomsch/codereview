@@ -42,7 +42,7 @@ export default defineComponent({
         const { RemoteRunnable } = await import('langchain/runnables/remote');
 
         const chain = new RemoteRunnable({
-          url: `http://localhost:8000/feedback/`,
+          url: process.env.VUE_APP_BACKEND + `feedback/`,
           // timeout: 1,
           // headers: {
           //   'Content-Type': 'application/json',
