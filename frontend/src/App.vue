@@ -12,6 +12,9 @@ export default defineComponent({
   name: 'App',
   components: {
     ApiExample
+  },
+  mounted() {
+    document.title = "Code Review Assistant";
   }
 })
 </script>
