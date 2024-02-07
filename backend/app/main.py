@@ -22,8 +22,8 @@ app = FastAPI(
 origins = [
     "http://localhost:8000",
     "http://localhost:8080",
-    "https://www.code-review-assistant.app/",
-    "https://code-review-assistant.app/"
+    "https://www.code-review-assistant.app",
+    "https://code-review-assistant.app"
 ]
 
 app.add_middleware(
