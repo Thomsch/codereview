@@ -3,8 +3,9 @@
     <h1>Code Review Assistant</h1>
     <p>Paste the URL of your GitHub pull request to receive feedback.</p>
     <div class="input-group">
-      <input v-model="prUrl" placeholder="Enter pull request URL" class="input-field" @keyup.enter="fetchData"/>
-      <button @click="fetchData" class="submit-btn">Review pull request</button>
+      <input v-model="prUrl" placeholder="Enter pull request URL" class="input-field" @input="updateValidation" @keyup.enter="onEnterKeyPress"/>
+      <div v-if="validation" class="validation">{{ validation }}</div>
+      <button @click="fetchData" class="submit-btn" :disabled="!isValidUrl(prUrl)">Review pull request</button>
     </div>
 
     <div v-if="loading" class="loading">Loading...</div>
@@ -15,13 +16,14 @@
     </div>
 
     <div v-if="error" class="error">
-      <p>Error: {{ error }}</p>
+      <p>{{ error }}</p>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import {defineComponent} from 'vue'
+
 export default defineComponent({
   data() {
     return {
@@ -29,17 +31,47 @@ export default defineComponent({
       llm_output: '' as string,
       loading: false as boolean,
       error: null as string | null,
+      validation: '' as string,
     };
   },
   methods: {
+    updateValidation() {
+      if (this.validation.length > 0) {
+        this.validation = '';
+      }
+    },
+    onEnterKeyPress() {
+      if (!this.isValidUrl(this.prUrl)) {
+        this.validation = "Invalid URL. Please enter a valid URL.";
+      } else {
+        this.fetchData();
+      }
+    },
+    isValidUrl(url: string): boolean {
+      const urlPattern = /^(https?:\/\/)?([^\s:@]+:[^\s:@]*@)?(([0-9]{1,3}\.){3}[0-9]{1,3}|([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})?(:[0-9]{1,5})?(\/\S*)?$/;
+      return urlPattern.test(url);
+    },
+
     async fetchData() {
+
+
+      if (this.prUrl.length === 0) {
+        this.validation = "Please enter a pull request URL. For example, https://github.com/psf/black/pull/4218";
+        return;
+      }
+
+      if (!this.isValidUrl(this.prUrl)) {
+        this.validation = "Invalid URL. Please enter a valid URL.";
+        return;
+      }
+
       this.loading = true;
       this.error = null // type: string | null
       this.llm_output = ''; // Reset feedback data
 
       try {
         // Import the RemoteRunnable inside the method to ensure it's only loaded when needed
-        const { RemoteRunnable } = await import('langchain/runnables/remote');
+        const {RemoteRunnable} = await import('langchain/runnables/remote');
 
         const chain = new RemoteRunnable({
           url: process.env.VUE_APP_BACKEND + `feedback/`,
@@ -51,7 +83,6 @@ export default defineComponent({
 
         // Use the prUrl data property instead of the hardcoded URL
         const stream = await chain.stream({pr_url: this.prUrl});
-
         let isFirstChunk = true;
 
         for await (const chunk of stream) {
@@ -70,10 +101,15 @@ export default defineComponent({
       } catch (err: unknown) {
         if (err instanceof Error) {
           this.error = err.message;
+          if (err.message.includes("fetch")) {
+            this.error = "Assistant unavailable. Please try again later.";
+          }
+          console.log({err})
         } else {
           // If it's not an Error object, you might want to handle it differently
           this.error = "An unknown error occurred";
         }
+        console.log("Error:", err);
 
       } finally {
         this.loading = false;
@@ -123,14 +159,24 @@ export default defineComponent({
   background-color: #45a049; /* Darker shade of green for hover effect */
 }
 
-.loading, .feedback, .error {
+.submit-btn:disabled {
+  background-color: #cccccc; /* Light gray background when button is disabled */
+  cursor: not-allowed; /* Change cursor to indicate that the button is disabled */
+}
+
+.loading, .feedback, .error, .validation {
   text-align: left;
   width: 100%;
+  padding: 10px;
+  font-size: smaller;
+}
+
+.validation {
+  color: #e57373;
 }
 
 .error {
   color: #e57373; /* Softer shade of red */
-  padding: 10px;
   margin-top: 10px;
   border: 1px solid #e57373; /* Optional: adds a subtle border */
   border-radius: 5px; /* Optional: rounds the corners for a softer look */
