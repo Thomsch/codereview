@@ -164,11 +164,14 @@ export default defineComponent({
   cursor: not-allowed; /* Change cursor to indicate that the button is disabled */
 }
 
+.loading, .error, .validation {
+  font-size: smaller;
+}
+
 .loading, .feedback, .error, .validation {
   text-align: left;
   width: 100%;
   padding: 10px;
-  font-size: smaller;
 }
 
 .validation {
