@@ -53,11 +53,3 @@ add_routes(
     enabled_endpoints=["stream"],
     include_callback_events=True,
 )
-
-
-if __name__ == "__main__":
-    import uvicorn
-    import os
-
-    port = int(os.getenv("PORT", "8000"))
-    uvicorn.run(app, host="localhost", port=port)

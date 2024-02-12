@@ -14,5 +14,5 @@ pip install -r requirements.txt
 
 #### Run the backend
 ```
-python3 app/main.py
+uvicorn app.main:app --reload
 ```
