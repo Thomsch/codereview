@@ -37,7 +37,13 @@ app.add_middleware(
 model = ChatOpenAI()
 prompt = ChatPromptTemplate.from_template(
     "Do a code review on this pull request by providing actionable feedback on the changes."
-    "Do not describe the code changes. "
+    "Be positive and constructive in your feedback."
+    "Start by a very brief summary of the changes in the pull request."
+    "Then, provide feedback on the changes in the pull request."
+    "Provide at least one security suggestion, one performance suggestion, one readability suggestion relevant to the changes in the pull request. "
+    "If you find other concerns, provide feedback on those as well."
+    "Make sure the feedback is always actionable and relevant to the changes in the pull request."
+    "End with a positive note."
     "The changes in the pull request are between the <diff> tags."
     "<diff>"
     "{diff}"
