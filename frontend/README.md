@@ -1,14 +1,6 @@
-# Vue.js
+# Code Review Assistant - Frontend
 
-This directory is a brief example of a [Vue.js](https://vuejs.org/) app that can be deployed to Vercel with zero configuration.
-
-## Deploy Your Own
-
-Deploy your own Vue.js project with Vercel.
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/vercel/vercel/tree/main/examples/vue&template=vue)
-
-_Live Example: https://vue-template.vercel.app_
+VueJS frontend in Typescript for the Code Review Assistant project.
 
 ## Running Locally
 
