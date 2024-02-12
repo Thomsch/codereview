@@ -11,7 +11,6 @@
     <div v-if="loading" class="loading">Loading...</div>
 
     <div v-if="llm_output" class="feedback">
-      <h2>Feedback</h2>
       <div v-html="llm_output"></div>
     </div>
 
